@@ -25,10 +25,11 @@ noise = np.random.normal(0, 0.05, x_data.shape)
 y_data = np.square(x_data) - 0.5 + noise
 '''
 data=pd.read_csv('h:\\tensorflowDLInSE\\data1.csv')
-x_data=data['fre'].tolist()
-x_data=np.array(x_data).reshape((1001,1))
+x_data1=data['fre'].tolist()
+x_data1=np.array([x_data1]).reshape((1,1001))
+x_data=np.array([300,120,300,60,10,70]).reshape((6,1))
 y_data=data['mag'].tolist()
-y_data=np.array(y_data).reshape((1001,1))
+y_data=np.array(y_data).reshape((1,1001))
 ##plt.scatter(x_data, y_data)
 ##plt.show()
 
@@ -36,9 +37,9 @@ y_data=np.array(y_data).reshape((1001,1))
 xs = tf.placeholder(tf.float32, [None, 1])
 ys = tf.placeholder(tf.float32, [None, 1])
 # add hidden layer
-l1 = add_layer(xs, 1, 10, activation_function=tf.nn.sigmoid)
+l1 = add_layer(xs, 6, 20, activation_function=tf.nn.sigmoid)
 # add output layer
-prediction = add_layer(l1, 10, 1, activation_function=None)
+prediction = add_layer(l1, 20, 1001, activation_function=None)
 
 # the error between prediciton and real data
 loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys-prediction), reduction_indices=[1]))
@@ -51,22 +52,24 @@ sess.run(init)
 # plot the real data
 fig = plt.figure()
 ax = fig.add_subplot(1,1,1)
-ax.scatter(x_data, y_data)
+ax.scatter(x_data1, y_data)
 plt.ion()
 plt.show()
 
 step_num=0
 starttime=datetime.datetime.now()
-batch_size=300
+#batch_size=300
 all_size=1001
 for i in range(100000):
     # training
-    start_index=(i*batch_size)%all_size
-    end_index=min((start_index+batch_size),all_size)
-    sess.run(train_step, feed_dict={xs: x_data[start_index:end_index],
-                                    ys: y_data[start_index:end_index]})
+    #start_index=(i*batch_size)%all_size
+    #end_index=min((start_index+batch_size),all_size)
+    #sess.run(train_step, feed_dict={xs: x_data[start_index:end_index],
+    #                              ys: y_data[start_index:end_index]})
+    sess.run(train_step,feed_dict={xs:x_data,ys:y_data[0]})
     if i % 5000== 0:
         # to visualize the result and improvement
+        print(sess.run(loss,feed_dict={xs: x_data,ys: y_data[0]}))
         step_num+=1
         try:
             ax.lines.remove(lines[0])
@@ -75,7 +78,7 @@ for i in range(100000):
         prediction_value = sess.run(prediction, feed_dict={xs: x_data})
         # plot the prediction
         print(step_num)
-        lines = ax.plot(x_data, prediction_value, 'r-', lw=5)
+        lines = ax.plot(x_data1[0],prediction_value[0], 'r-', lw=5)
         plt.pause(0.1)
 endtime=datetime.datetime.now()
 print('耗时： ',(endtime-starttime).seconds,' 秒')

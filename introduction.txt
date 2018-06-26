@@ -1,0 +1,1 @@
+testfunction 可以预测1001个输出
