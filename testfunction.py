@@ -17,12 +17,27 @@ x_data = np.array([[1,2],[2,1]])
 
 y_data=[[7,7,8,156],[50,70,80,7]]
 '''
+def return_in_out_data(input_data_path,output_data_path):
+    x_data = pd.read_csv(input_data_path).values
+    y_data = pd.read_csv(output_data_path).values.T
+    return x_data,y_data
+    
+    
+#x_x=np.linspace(1,3,1001).reshape((1,1001))
+x_data ,y_data= return_in_out_data('h:\\tensorflowDLInSE\\preprocessingdata\\x_data.csv',
+                                   'h:\\tensorflowDLInSE\\preprocessingdata\\y_data.csv')
+
+
+
+
+'''
 x_x=np.linspace(1,3,1001).reshape((1,1001))
 data=pd.read_csv('h:\\tensorflowDLInSE\\data2.csv')
 x_data=[[300,120,300]]
 y_data=data['mag'].tolist()
 y_data=np.array(y_data).reshape((1,1001))
 #y_data[0]=y_d
+'''
 
 xs=tf.placeholder(tf.float32,[None,3])
 ys=tf.placeholder(tf.float32,[None,1001])
@@ -43,6 +58,6 @@ for i in range (10000):
        print(sess.run(predition,feed_dict={xs:[[300,120,300]]}))
 #aa=sess.run(predition,feed_dict={xs:[[300,120,300]]}).reshape((1001,1))
 #np.savetxt("H:\pre_values1.txt",aa)
-
+#JI
 
 print('Its ok!')
